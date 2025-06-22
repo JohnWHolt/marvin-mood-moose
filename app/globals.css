@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen;
+  }
+}
+
+@layer components {
+  .marvin-container {
+    @apply container mx-auto px-4 max-w-6xl;
+  }
+  
+  .mood-card {
+    @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-300;
+  }
+  
+  .mood-card:hover {
+    @apply shadow-xl transform scale-105;
+  }
+}
+
+/* Custom animations */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes manic-bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+.sparkle-animation {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.gentle-float {
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+.manic-bounce {
+  animation: manic-bounce 0.8s ease-in-out infinite;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .sparkle-animation,
+  .gentle-float,
+  .manic-bounce {
+    animation: none;
+  }
+}
