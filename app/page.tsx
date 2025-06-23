@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import RealMarvinSVG from '@/components/RealMarvinSVG'
 import MoodToggle from '@/components/MoodToggle'
 import ChatInterface from '@/components/ChatInterface'
-import VoiceController from '@/components/VoiceController'
+import ConversationalVoiceController from '@/components/ConversationalVoiceController'
 import EnvironmentSelector from '@/components/EnvironmentSelector'
 import { marvinTransitionController } from '@/lib/marvin-transition-controller'
 
@@ -15,6 +15,7 @@ export default function Home() {
   const [textToSpeak, setTextToSpeak] = useState<string | null>(null)
   const [isMarvinSpeaking, setIsMarvinSpeaking] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isVoiceConversationActive, setIsVoiceConversationActive] = useState(false)
 
   const handleMoodChange = useCallback(async (newMood: 'manic' | 'depressive') => {
     if (isTransitioning) return
@@ -37,6 +38,10 @@ export default function Home() {
     setIsMarvinSpeaking(speaking)
   }, [])
 
+  const handleConversationStateChange = useCallback((isActive: boolean) => {
+    setIsVoiceConversationActive(isActive)
+  }, [])
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -53,19 +58,28 @@ export default function Home() {
           }}
           transition={{ duration: 0.5 }}
         >
-          🦌 Marvin the Bipolar Mood Moose
+          🦌 Marvin
         </motion.h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto px-4">
-          An emotionally intelligent companion that helps you understand and navigate 
+        <motion.p 
+          className="text-2xl text-gray-600 mb-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          The Bipolar Mood Moose
+        </motion.p>
+        <p className="text-lg text-gray-500 max-w-3xl mx-auto px-4">
+          An emotionally intelligent AI companion that helps you understand and navigate 
           the beautiful complexity of human emotions through authentic bipolar experiences.
         </p>
         <motion.div
-          className="mt-4 text-sm text-gray-500"
+          className="mt-4 text-sm text-gray-400"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
         >
-          <p>✨ This is a therapeutic companion, not a replacement for professional mental health care.</p>
+          <p>✨ Powered by <span className="text-blue-500 font-medium">Infinite Synergy AI</span></p>
+          <p className="text-xs mt-1">This is a therapeutic companion, not a replacement for professional mental health care.</p>
         </motion.div>
       </motion.header>
 
@@ -81,7 +95,7 @@ export default function Home() {
             <RealMarvinSVG
               mood={mood}
               isAnimating={!isTransitioning}
-              isTalking={isMarvinSpeaking}
+              isTalking={isMarvinSpeaking || isVoiceConversationActive}
             />
           </div>
         </motion.div>
@@ -114,16 +128,16 @@ export default function Home() {
             />
           </motion.div>
 
-          {/* Voice Controller */}
+          {/* Conversational Voice Controller */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <VoiceController
+            <ConversationalVoiceController
               mood={mood === 'transition' ? 'manic' : mood as 'manic' | 'depressive'}
-              textToSpeak={textToSpeak}
-              onSpeakingChange={handleSpeakingChange}
+              onMarvinSpeak={handleMarvinSpeak}
+              onConversationStateChange={handleConversationStateChange}
             />
           </motion.div>
         </div>
@@ -163,7 +177,11 @@ export default function Home() {
                 <strong>Environment:</strong> {selectedEnvironment.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </p>
               <p>
-                <strong>Voice:</strong> {isMarvinSpeaking ? '🔊 Speaking' : '🔇 Quiet'}
+                <strong>Interaction:</strong> {
+                  isVoiceConversationActive ? '🎙️ Voice Chat Active' :
+                  isMarvinSpeaking ? '🔊 Speaking' : 
+                  '💬 Text Chat'
+                }
               </p>
             </div>
           </div>
@@ -178,19 +196,56 @@ export default function Home() {
         transition={{ delay: 1.5 }}
       >
         <div className="marvin-container">
-          <p className="mb-2">
-            Marvin is designed to normalize emotional fluctuations and provide supportive companionship.
-          </p>
-          <p>
-            If you're experiencing a mental health crisis, please reach out to a qualified professional or crisis helpline.
-          </p>
-          <div className="mt-4 space-x-4">
-            <a href="#" className="text-blue-600 hover:underline">About Marvin</a>
-            <a href="#" className="text-blue-600 hover:underline">Mental Health Resources</a>
-            <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">🦌 Marvin</h3>
+            <p className="text-gray-600 mb-2">
+              Designed to normalize emotional fluctuations and provide supportive companionship.
+            </p>
+            <p className="text-red-600 font-medium">
+              If you're experiencing a mental health crisis, please reach out to a qualified professional or crisis helpline.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-2">Resources</h4>
+              <div className="space-y-1">
+                <a href="https://infinitesynergy.ai/mental-health-resources" className="block text-blue-600 hover:underline">Mental Health Resources</a>
+                <a href="https://988lifeline.org" className="block text-blue-600 hover:underline">Crisis Lifeline (988)</a>
+                <a href="https://www.nami.org" className="block text-blue-600 hover:underline">NAMI Support</a>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-2">About</h4>
+              <div className="space-y-1">
+                <a href="https://infinitesynergy.ai/about" className="block text-blue-600 hover:underline">About Infinite Synergy AI</a>
+                <a href="https://infinitesynergy.ai/marvin" className="block text-blue-600 hover:underline">How Marvin Works</a>
+                <a href="https://infinitesynergy.ai/research" className="block text-blue-600 hover:underline">Research & Ethics</a>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-2">Legal</h4>
+              <div className="space-y-1">
+                <a href="https://infinitesynergy.ai/privacy" className="block text-blue-600 hover:underline">Privacy Policy</a>
+                <a href="https://infinitesynergy.ai/terms" className="block text-blue-600 hover:underline">Terms of Service</a>
+                <a href="https://infinitesynergy.ai/contact" className="block text-blue-600 hover:underline">Contact Us</a>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-200 pt-4">
+            <p className="text-xs text-gray-400">
+              © 2024 <a href="https://infinitesynergy.ai" className="text-blue-500 hover:underline">Infinite Synergy AI</a>. All rights reserved.
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Marvin is an experimental AI companion designed for emotional exploration and support.
+            </p>
           </div>
         </div>
       </motion.footer>
     </div>
   )
 }
+
