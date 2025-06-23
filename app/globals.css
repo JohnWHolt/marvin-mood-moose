@@ -22,7 +22,7 @@
   }
   
   .mood-card:hover {
-    @apply shadow-xl transform scale-105;
+    @apply shadow-xl;
   }
 }
 
@@ -62,4 +62,18 @@
   .manic-bounce {
     animation: none;
   }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-gradient-to-br from-gray-900 to-blue-900;
+  }
+}
+
