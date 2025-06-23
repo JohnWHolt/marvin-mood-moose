@@ -2,14 +2,17 @@
 
 import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
+import { useUser } from '@auth0/nextjs-auth0/client'
 import RealMarvinSVG from '@/components/RealMarvinSVG'
 import MoodToggle from '@/components/MoodToggle'
 import ChatInterface from '@/components/ChatInterface'
 import ConversationalVoiceController from '@/components/ConversationalVoiceController'
 import EnvironmentSelector from '@/components/EnvironmentSelector'
+import AuthButton from '@/components/AuthButton'
 import { marvinTransitionController } from '@/lib/marvin-transition-controller'
 
 export default function Home() {
+  const { user } = useUser()
   const [mood, setMood] = useState<'neutral' | 'manic' | 'depressive' | 'transition'>('neutral')
   const [selectedEnvironment, setSelectedEnvironment] = useState('default')
   const [textToSpeak, setTextToSpeak] = useState<string | null>(null)
@@ -51,6 +54,11 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
+        {/* Auth Section */}
+        <div className="absolute top-4 right-4">
+          <AuthButton />
+        </div>
+
         <motion.h1 
           className="text-5xl font-bold text-gray-800 mb-4"
           animate={{ 
@@ -84,6 +92,20 @@ export default function Home() {
       </motion.header>
 
       <div className="marvin-container pb-8">
+        {/* Welcome Message for Authenticated Users */}
+        {user && (
+          <motion.div
+            className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <p className="text-blue-800">
+              Welcome back, {user.name?.split(' ')[0]}! Marvin remembers your previous conversations and mood preferences.
+            </p>
+          </motion.div>
+        )}
+
         {/* Main Marvin Display */}
         <motion.div
           className="mb-8 relative"
@@ -152,6 +174,7 @@ export default function Home() {
             mood={mood === 'transition' ? 'manic' : mood as 'manic' | 'depressive'}
             onMarvinSpeak={handleMarvinSpeak}
             isMarvinSpeaking={isMarvinSpeaking}
+            userId={user?.sub} // Pass user ID for personalization
           />
         </motion.div>
 
@@ -165,6 +188,9 @@ export default function Home() {
           <div className="mood-card max-w-md mx-auto">
             <h3 className="text-lg font-semibold mb-2">Current Status</h3>
             <div className="space-y-2 text-sm text-gray-600">
+              <p>
+                <strong>User:</strong> {user ? `${user.name?.split(' ')[0]} (Signed In)` : 'Anonymous Guest'}
+              </p>
               <p>
                 <strong>Mood:</strong> {
                   mood === 'transition' ? '⚡ Transitioning...' :
