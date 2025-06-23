@@ -46,9 +46,15 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-5xl font-bold text-gray-800 mb-4">
+        <motion.h1 
+          className="text-5xl font-bold text-gray-800 mb-4"
+          animate={{ 
+            color: mood === 'manic' ? '#20B2AA' : mood === 'depressive' ? '#D8BFD8' : '#374151'
+          }}
+          transition={{ duration: 0.5 }}
+        >
           🦌 Marvin the Bipolar Mood Moose
-        </h1>
+        </motion.h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto px-4">
           An emotionally intelligent companion that helps you understand and navigate 
           the beautiful complexity of human emotions through authentic bipolar experiences.
