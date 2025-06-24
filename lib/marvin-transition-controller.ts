@@ -1,4 +1,4 @@
-import { moodEngine, MoodState } from './mood-engine'
+import { moodEngine, MoodState } from './mood.engine'
 
 export class MarvinTransitionController {
   private isTransitioning: boolean = false
